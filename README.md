@@ -1,4 +1,4 @@
-# movie_be
+# movie_server
 
 Introduction
 * Project provide data for FE and process logic.
