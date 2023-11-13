@@ -4,6 +4,13 @@ Introduction
 * Project provide data for FE and process logic.
 * The project can provide movie data, provide search movie data and filter movie.
 
+# Build Withs
+
+* [![Next][Next.js]][Next-url]
+
+
+# Getting Started
+
 Before you continue, ensure you meet the following requirements:
 
 * You have installed the latest version of nodejs (https://nodejs.org/en/download/). 
