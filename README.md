@@ -4,12 +4,12 @@ Introduction
 * Project provide data for FE and process logic.
 * The project can provide movie data, provide search movie data and filter movie.
 
-# Build Withs
+### Build Withs
 
 * [![Next][Next.js]][Next-url]
 
 
-# Getting Started
+### Getting Started
 
 Before you continue, ensure you meet the following requirements:
 
@@ -27,7 +27,7 @@ Install
 * Run project (https://github.com/TungPT12/movie_fe/blob/main/README.md).
 
 
-Contact me:
+### Contact me:
 
 * Phone number: 0988486443.
 * Email: boypham12042000@gmail.com.
