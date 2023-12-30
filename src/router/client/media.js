@@ -1,6 +1,6 @@
 const express = require('express');
 
-const mediaController = require('../controllers/media');
+const mediaController = require('../../controllers/client/media');
 
 const router = express.Router();
 

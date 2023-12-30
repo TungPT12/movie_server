@@ -1,6 +1,6 @@
 const express = require('express');
 
-const yearController = require('../controllers/year');
+const yearController = require('../../controllers/client/year');
 
 const router = express.Router();
 

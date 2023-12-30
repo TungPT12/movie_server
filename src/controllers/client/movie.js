@@ -1,8 +1,8 @@
-const Movie = require('../models/Movies');
-const Genre = require('../models/Genre');
-const Video = require('../models/Video');
+const Movie = require('../../models/Movies');
+const Genre = require('../../models/Genre');
+const Video = require('../../models/Video');
 
-const paging = require('../utils/paging');
+const paging = require('../../utils/paging');
 
 // movie can show for per page
 const moviePerPage = 20;
