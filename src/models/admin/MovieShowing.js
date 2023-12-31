@@ -16,9 +16,24 @@ const movieShowingSchema = new Schema({
     },
     times: [
         {
-            type: String,
-            required: true,
-        }
+            time: {
+                type: String,
+                required: true,
+            },
+            chairs: [
+                {
+                    title: {
+                        type: String,
+                        required: true,
+                    },
+                    isBooked: {
+                        type: Boolean,
+                        required: true
+                    },
+                    _id: false
+                }
+            ],
+        },
     ],
 })
 

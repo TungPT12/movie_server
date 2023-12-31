@@ -15,5 +15,7 @@ router.get('/api/movies/discover', movieController.getDiscoverMovies)
 router.post('/api/movies/video', movieController.getVideo)
 
 router.post('/api/movies/search', movieController.searchMovies)
+router.get('/api/movies/movies-showing', movieController.getMoviesShowing)
+router.get('/api/movies/movies-showing/:id', movieController.getMoviesShowingDetail)
 
 module.exports = router

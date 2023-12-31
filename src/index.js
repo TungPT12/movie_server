@@ -12,6 +12,7 @@ const movieRouter = require('./router/admin/movies')
 
 //client
 const movieRoutes = require('./router/client/movie')
+const orderRoutes = require('./router/client/order')
 const genreRoutes = require('./router/client/genre')
 const mediaRoutes = require('./router/client/media')
 const languageRoutes = require('./router/client/language')
@@ -22,8 +23,7 @@ const port = 5000;
 
 app.use(express.json());
 app.use(cors({
-    origin: ['http://localhost:3000',
-        'http://localhost:3001', "https://movie-trailer-client.netlify.app",],
+    origin: ['http://localhost:3000', 'http://localhost:3001', "https://movie-trailer-client.netlify.app",],
     credentials: true
 }));
 
@@ -48,6 +48,8 @@ app.use(session({
 //admin
 app.use("/api/admin", authnRouter);
 app.use("/api/admin", movieRouter);
+app.use(movieRoutes)
+app.use(orderRoutes)
 
 app.use('/', (req, res, next) => {
     next();
@@ -58,7 +60,6 @@ app.use(mediaRoutes)
 app.use(genreRoutes)
 app.use(languageRoutes)
 app.use(yearRoutes)
-app.use(movieRoutes)
 app.use(notFoundRoutes)
 
 

@@ -28,14 +28,13 @@ exports.getMoviesShowing = async (req, res) => {
         const movies = JSON.parse(moviesJson);
 
         const moviesShowing = await MovieShowing.find();
+        console.log(moviesShowing)
         let results = []
         if (moviesShowing.length > 0) {
             moviesShowing.forEach(movieShowing => {
-                console.log(movieShowing.movieId)
                 const movieDetail = movies.find(movie => {
                     return movieShowing.movieId === movie.id.toString();
                 })
-                console.log(movieDetail)
                 if (movieDetail) {
                     results.push({
                         _id: movieShowing._id,
@@ -48,7 +47,7 @@ exports.getMoviesShowing = async (req, res) => {
             });
             return res.json(results)
         }
-
+        return res.json(results)
     } catch (error) {
         console.log(error)
         return res.status(500).send(JSON.stringify({
@@ -60,12 +59,47 @@ exports.getMoviesShowing = async (req, res) => {
 
 exports.createMovieShowing = (req, res) => {
     try {
-        const { movieId, price, date, times } = req.body;
+        const UpperCaseAlphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+
+        const { movieId, price, date, times, quantity } = req.body;
+        const row = Math.ceil(parseInt(quantity) / 10);
+        const chairs = [];
+        for (let index = 0; index < row; index++) {
+            let count = 1;
+            if (index === row - 1) {
+                for (let j = index * 10; j < parseInt(quantity); j++) {
+                    chairs.push({
+                        title: `${UpperCaseAlphabet[index]}${count}`,
+                        isBooked: false
+                    })
+                    count++;
+                }
+            } else {
+                for (let j = index * 10; j < ((index + 1) * 10); j++) {
+
+                    chairs.push({
+                        title: `${UpperCaseAlphabet[index]}${count}`,
+                        isBooked: false
+                    })
+                    count++;
+                }
+            }
+        }
+
+        let formatTimes = []
+
+        times.forEach((time) => {
+            formatTimes.push({
+                time: time,
+                chairs: chairs
+            })
+        })
+
         const movieShowing = new MovieShowing({
             movieId: movieId,
             price: price,
-            times: times,
-            date: date
+            times: formatTimes,
+            date: date,
         })
 
         const movieShowingCreated = movieShowing.save();

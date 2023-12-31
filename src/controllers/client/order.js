@@ -1,5 +1,7 @@
-const Order = require("../../models/Order");
 // const Transaction = require("../../models/Transaction");
+
+const MovieShowing = require("../../models/admin/MovieShowing");
+const Order = require("../../models/admin/Order");
 
 // const transactionPerPage = 8;
 
@@ -45,27 +47,76 @@ const Order = require("../../models/Order");
 //     }
 // }
 
-exports.getOrdersNew = async (req, res) => {
+// exports.getOrdersNew = async (req, res) => {
+//     try {
+//         const orders = await Order.find().sort({ createDate: -1 })
+//         const date = new Date();
+//         const thisYear = date.getFullYear();
+//         const thisMonth = date.getMonth() + 1;
+
+//         const ordersInThisMonth = orders.filter((order) => {
+//             return order.create_at.getMonth() + 1 === thisMonth && order.create_at.getFullYear() === thisYear;
+//         });
+
+//         const earningInMonth = ordersInThisMonth.reduce((sum, order) => {
+//             return sum = sum + order.totalPrice;
+//         }, 0)
+
+//         return res.send(JSON.stringify({
+//             countNewOrders: ordersInThisMonth.length,
+//             earningInMonth: earningInMonth,
+//             results: ordersInThisMonth
+//         }))
+//     } catch (error) {
+//         return res.status(500).send(JSON.stringify({
+//             message: "Server Error",
+//             success: false
+//         }))
+//     }
+// }
+
+exports.createOrder = async (req, res) => {
     try {
-        const orders = await Order.find().sort({ createDate: -1 })
-        const date = new Date();
-        const thisYear = date.getFullYear();
-        const thisMonth = date.getMonth() + 1;
+        const { movieShowingId, date, time, totalPrice, email, phone, chairs } = req.body;
 
-        const ordersInThisMonth = orders.filter((order) => {
-            return order.create_at.getMonth() + 1 === thisMonth && order.create_at.getFullYear() === thisYear;
-        });
+        const movieShowing = await MovieShowing.findById(movieShowingId);
 
-        const earningInMonth = ordersInThisMonth.reduce((sum, order) => {
-            return sum = sum + order.totalPrice;
-        }, 0)
+        const movieShowingTimes = movieShowing.times
 
-        return res.send(JSON.stringify({
-            countNewOrders: ordersInThisMonth.length,
-            earningInMonth: earningInMonth,
-            results: ordersInThisMonth
-        }))
+        const positionTime = movieShowingTimes.findIndex((movieShowingTime) => {
+            return time === movieShowingTime.time;
+        })
+
+        if (positionTime > -1) {
+            let movieShowingTimeChairs = movieShowingTimes[positionTime].chairs;
+            movieShowingTimeChairs.forEach((movieShowingTimeChair, index) => {
+                if (chairs.includes(movieShowingTimeChair.title)) {
+                    movieShowingTimeChairs[index].isBooked = true;
+                }
+            });
+
+            movieShowing.times[positionTime].chairs = movieShowingTimeChairs
+        }
+
+        const newOrder = new Order({
+            movieShowing: movieShowing,
+            date: date,
+            email: email,
+            phone: phone,
+            time: time,
+            totalPrice: totalPrice,
+            chairs: chairs
+        })
+
+        const newOrderCreated = await newOrder.save();
+        movieShowing.save();
+
+        if (newOrderCreated) {
+            return res.sendStatus(200);
+        }
+
     } catch (error) {
+        console.log(error)
         return res.status(500).send(JSON.stringify({
             message: "Server Error",
             success: false

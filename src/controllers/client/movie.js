@@ -1,7 +1,10 @@
 const Movie = require('../../models/Movies');
 const Genre = require('../../models/Genre');
 const Video = require('../../models/Video');
-
+const MovieShowing = require('../../models/admin/MovieShowing');
+const fs = require('fs')
+const path = require('path');
+const srcPath = require('../../utils/path');
 const paging = require('../../utils/paging');
 
 // movie can show for per page
@@ -357,3 +360,91 @@ exports.searchMovies = (req, res) => {
     }
 }
 
+
+// exports.getMovies = (req, res) => {
+//     try {
+//         const MOVIE_PATH = path.join(srcPath, 'data', 'movieList.json');
+//         const moviesJson = fs.readFileSync(MOVIE_PATH, 'utf-8', (error) => {
+//             console.log(error)
+//         })
+
+//         return res.json(JSON.parse(moviesJson))
+//     } catch (error) {
+//         console.log(error)
+//         return res.status(500).send(JSON.stringify({
+//             message: "Server Error",
+//             success: false
+//         }))
+//     }
+// }
+
+exports.getMoviesShowing = async (req, res) => {
+    try {
+        const MOVIE_PATH = path.join(srcPath, 'data', 'movieList.json');
+        const moviesJson = fs.readFileSync(MOVIE_PATH, 'utf-8', (error) => {
+            console.log(error)
+        })
+        const movies = JSON.parse(moviesJson);
+
+        const moviesShowing = await MovieShowing.find();
+        let results = []
+        if (moviesShowing.length > 0) {
+            moviesShowing.forEach(movieShowing => {
+                const movieDetail = movies.find(movie => {
+                    return movieShowing.movieId === movie.id.toString();
+                })
+                if (movieDetail) {
+                    results.push({
+                        _id: movieShowing._id,
+                        movie: movieDetail,
+                        price: movieShowing.price,
+                        date: movieShowing.date,
+                        times: movieShowing.times,
+                    })
+                }
+            });
+            return res.json(results)
+        }
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send(JSON.stringify({
+            message: "Server Error",
+            success: false
+        }))
+    }
+}
+
+exports.getMoviesShowingDetail = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const MOVIE_PATH = path.join(srcPath, 'data', 'movieList.json');
+        const moviesJson = fs.readFileSync(MOVIE_PATH, 'utf-8', (error) => {
+            console.log(error)
+        })
+        const movies = JSON.parse(moviesJson);
+        const movieShowing = await MovieShowing.findById(id);
+        if (movieShowing) {
+            const movieDetail = movies.find(movie => {
+                return movieShowing.movieId === movie.id.toString();
+            });
+            if (movieDetail) {
+                return res.json({
+                    _id: movieShowing._id,
+                    movie: movieDetail,
+                    price: movieShowing.price,
+                    date: movieShowing.date,
+                    times: movieShowing.times,
+                    chairs: movieShowing.chairs
+                })
+            }
+        }
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send(JSON.stringify({
+            message: "Server Error",
+            success: false
+        }))
+    }
+}
